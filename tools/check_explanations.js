@@ -30,5 +30,25 @@ for (const [key, cat] of Object.entries(ctx.HAM.cats)) {
   }
   for (const uid of Object.keys(ex.items)) if (!uids.has(uid)) { console.log(`UNKNOWN UID ${key} ${uid}`); problems++; }
 }
+
+// チートシート:全問題がいずれかの行に含まれ、未知の uid や topic を参照していないか
+vm.runInContext(fs.readFileSync(path.join(root, 'data/cheatsheet.js'), 'utf8'), ctx);
+const uidCat = {};
+for (const [key, cat] of Object.entries(ctx.HAM.cats)) for (const q of cat.questions) uidCat[q.uid] = key;
+const inSheet = new Set();
+let cards = 0;
+for (const g of ctx.HAM.cheatsheet) for (const c of g.cards) {
+  cards++;
+  for (const [, , uids] of c.rows) for (const u of uids.split(' ')) {
+    if (!uidCat[u]) { console.log(`CHEATSHEET UNKNOWN UID ${c.id} ${u}`); problems++; }
+    inSheet.add(u);
+  }
+  for (const t of c.topics || []) {
+    const [k, name] = t.split(':');
+    if (!(ctx.HAM.exps[k] && ctx.HAM.exps[k].topics[name])) { console.log(`CHEATSHEET BAD TOPIC ${c.id} ${t}`); problems++; }
+  }
+}
+for (const u of Object.keys(uidCat)) if (!inSheet.has(u)) { console.log(`NOT IN CHEATSHEET ${u}`); problems++; }
+console.log(`cheatsheet: ${cards} cards cover ${inSheet.size}/${total} questions`);
 console.log(`${covered}/${total} questions explained, ${problems} problem(s)`);
 process.exit(problems ? 1 : 0);

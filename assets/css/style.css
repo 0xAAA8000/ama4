@@ -383,3 +383,78 @@ kbd { font-family: "JetBrains Mono", monospace; font-size: 11px; padding: 1px 6p
 
 /* 開いた項目では要約行の問題文を隠し、本文と重複させない */
 .review-item[open] .sum-text p { display: none; }
+
+/* ===== チートシート ===== */
+.sheet-banner {
+  display: flex; align-items: center; gap: 14px; margin-top: 18px; text-decoration: none; color: var(--text);
+  background: linear-gradient(120deg, var(--accent-soft), var(--surface) 70%);
+}
+.sheet-banner:hover { border-color: var(--accent-2); }
+.sheet-banner__icon { font-size: 30px; flex: none; }
+.sheet-banner b { display: block; font-size: 17px; }
+.sheet-banner small { display: block; color: var(--text-2); font-size: 14px; }
+.sheet-banner__go { margin-left: auto; font-size: 22px; color: var(--accent); flex: none; }
+
+.chip-demo { font-size: 12px; padding: 1px 8px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); }
+.sheet-nav { display: grid; gap: 8px; margin-bottom: 8px; }
+.sheet-nav__group { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.sheet-nav__chip {
+  border: 1px solid var(--border); background: var(--surface); border-radius: 999px; padding: 3px 12px;
+  font-size: 13px; cursor: pointer; color: var(--text-2);
+}
+.sheet-nav__chip:hover { border-color: var(--accent-2); color: var(--text); }
+
+.sheet-grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 480px), 1fr)); align-items: start; }
+.sheet-card { padding: 16px 16px 14px; scroll-margin-top: 72px; }
+.sheet-card__head { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.sheet-card__head h3 { margin: 0; font-size: 17px; flex: 1; min-width: 0; }
+.sheet-card__icon { font-size: 22px; }
+.sheet-why { margin: 0 0 10px; font-size: 14px; line-height: 1.7; padding: 10px 12px; border-radius: 12px; background: var(--ok-soft); }
+.sheet-why b:first-child { color: var(--ok); margin-right: 8px; }
+
+.sheet-rows { list-style: none; margin: 0; padding: 0; }
+.sheet-row {
+  display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.4fr) auto; gap: 4px 12px; align-items: start;
+  padding: 8px 2px; border-top: 1px solid var(--border); font-size: 14px; line-height: 1.65;
+}
+.sheet-row:first-child { border-top: 0; }
+.sheet-row__q { color: var(--text-2); }
+.sheet-row__a b { color: var(--text); background: linear-gradient(transparent 62%, color-mix(in srgb, var(--accent) 22%, transparent) 62%); }
+.sheet-row__n {
+  font-size: 12px; font-weight: 700; padding: 2px 9px; border-radius: 999px; text-decoration: none; white-space: nowrap;
+  background: var(--accent-soft); color: var(--accent);
+}
+.sheet-row__n:hover { background: var(--accent); color: #fff; }
+.sheet-row__n.ok { background: var(--ok-soft); color: var(--ok); }
+.sheet-row__n.ok::before { content: "✓ "; }
+.sheet-row__n.ng { background: var(--ng-soft); color: var(--ng); }
+.sheet-card__foot { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 10px; }
+.sheet-more { flex-basis: 100%; }
+.sheet-more summary { cursor: pointer; font-size: 14px; font-weight: 700; color: var(--accent); }
+.sheet-topic { border-top: 1px dashed var(--border); padding-top: 10px; margin-top: 10px; font-size: 15px; }
+.sheet-topic h4 { margin: 0 0 6px; font-size: 15px; }
+
+@media (max-width: 560px) {
+  .sheet-row { grid-template-columns: minmax(0, 1fr) auto; }
+  .sheet-row__q { grid-column: 1 / -1; font-size: 13px; }
+  .sheet-row__a { grid-column: 1; }
+}
+
+@media print {
+  .topbar, .footer, .sheet-tools, .sheet-nav, .sheet-card__foot, .back, .skip { display: none !important; }
+  body { background: #fff; color: #000; }
+  .main { max-width: none; padding: 0; }
+  .sheet-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .sheet-card { box-shadow: none; break-inside: avoid; padding: 8px; border-color: #ccc; }
+  .sheet-row { font-size: 10.5px; padding: 3px 0; }
+  .sheet-why { font-size: 10.5px; padding: 4px 8px; }
+  .sheet-row__n { background: none; padding: 0; }
+}
+.sheet-row[hidden], .sheet-card[hidden] { display: none; }
+.topnav a { white-space: nowrap; }
+@media (max-width: 440px) {
+  .topbar__inner { gap: 8px; }
+  .brand__text { display: none; }
+  .topnav { gap: 2px; }
+  .topnav a { font-size: 13px; padding: 6px 9px; }
+}

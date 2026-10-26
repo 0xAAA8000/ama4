@@ -19,5 +19,10 @@ window.HAM = {
    */
   addExplanations: function (key, d) {
     this.exps[key] = d;
+  },
+
+  // groups = [{ key, title, cards: [{ id, title, icon, why, rows: [[問われ方, 答え, 'uid uid ...']], topics }] }]
+  addCheatsheet: function (groups) {
+    this.cheatsheet = groups;
   }
 };

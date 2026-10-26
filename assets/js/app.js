@@ -49,6 +49,10 @@
   function range(n) { var a = []; for (var i = 0; i < n; i++) a.push(i); return a; }
   function stripTags(html) { return html.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim(); }
   function questions(key) { return (HAM.cats[key] && HAM.cats[key].questions) || []; }
+  var UID_CAT = {};
+  Object.keys(HAM.cats).forEach(function (k) {
+    HAM.cats[k].questions.forEach(function (q) { UID_CAT[q.uid] = k; });
+  });
   function findQ(key, uid) {
     var qs = questions(key);
     for (var i = 0; i < qs.length; i++) if (qs[i].uid === uid) return qs[i];
@@ -153,6 +157,14 @@
         '<div><a class="btn' + (wrong ? ' primary' : '') + '" href="#/review">復習リスト(' + wrong + '問)</a></div></div>' +
       '</div>';
 
+    var sheetCards = 0, sheetRows = 0;
+    (HAM.cheatsheet || []).forEach(function (g) {
+      g.cards.forEach(function (c) { sheetCards++; sheetRows += c.rows.length; });
+    });
+    html += '<a class="card sheet-banner" href="#/cheatsheet"><span class="sheet-banner__icon" aria-hidden="true">🧭</span>' +
+      '<span><b>チートシートで効率よく覚える</b><small>似た問題を ' + sheetRows + ' の「問われ方 → 答え」に集約(' + sheetCards + 'テーマ)。1行覚えれば複数問に対応できます。</small></span>' +
+      '<span class="sheet-banner__go" aria-hidden="true">→</span></a>';
+
     html += catSection('law', '法規');
     html += catSection('tech', '無線工学');
 
@@ -207,6 +219,13 @@
       mode: 'practice', title: (CAT[cat].group === 'law' ? '法規' : '無線工学') + ' ・ ' + CAT[cat].name,
       back: '#/', items: qs.map(function (q) { return makeItem(cat, q); }), idx: 0
     };
+    renderQuestion();
+  }
+
+  function startList(title, back, refs) {
+    var items = shuffle(refs.slice()).map(function (r) { return makeItem(r.cat, r.q); });
+    if (!items.length) { location.hash = back; return; }
+    session = { mode: 'practice', title: title, back: back, items: items, idx: 0 };
     renderQuestion();
   }
 
@@ -490,6 +509,122 @@
     input.focus();
   }
 
+  /* ---------- 画面: チートシート ---------- */
+  function sheetCard(id) {
+    var found = null;
+    (HAM.cheatsheet || []).forEach(function (g) {
+      g.cards.forEach(function (c) { if (c.id === id) found = c; });
+    });
+    return found;
+  }
+  function rowRefs(uids) {
+    return uids.split(' ').map(function (u) { return { cat: UID_CAT[u], q: findQ(UID_CAT[u], u) }; });
+  }
+  function cardRefs(card) {
+    var seen = {}, out = [];
+    card.rows.forEach(function (row) {
+      rowRefs(row[2]).forEach(function (r) { if (!seen[r.q.uid]) { seen[r.q.uid] = 1; out.push(r); } });
+    });
+    return out;
+  }
+  // 行の習得状態:全問が直近正解なら done、1問でも直近不正解なら ng
+  function rowState(refs) {
+    var done = 0, ng = 0;
+    refs.forEach(function (r) {
+      var rec = progress[recKey(r.cat, r.q.uid)];
+      if (rec && rec.last) done++;
+      else if (rec) ng++;
+    });
+    return ng ? 'ng' : (done === refs.length ? 'ok' : '');
+  }
+
+  function renderCheatsheet() {
+    var groups = HAM.cheatsheet || [];
+    var nRows = 0, nQ = 0;
+    groups.forEach(function (g) {
+      g.cards.forEach(function (c) { nRows += c.rows.length; nQ += cardRefs(c).length; });
+    });
+
+    var html = '<div class="sheet"><div class="page-head"><a class="back" href="#/">← ホーム</a>' +
+      '<h1>チートシート</h1>' +
+      '<p class="muted">似た問題を「問われ方 → 答え」の型にまとめました。全' + nQ + '問を ' + nRows +
+      ' 行に集約しています。各行の<b class="chip-demo">N問</b>を押すと、その型の問題だけを解けます。</p></div>' +
+      '<div class="toolbar sheet-tools"><input class="search" id="sheetFilter" type="search" placeholder="まとめ内を検索(例: 10分、λ/4、非常)" aria-label="チートシート内検索">' +
+      '<button class="btn ghost" type="button" id="printSheet">印刷 / PDF</button></div>' +
+      '<nav class="sheet-nav" aria-label="テーマ一覧">';
+    groups.forEach(function (g) {
+      html += '<div class="sheet-nav__group"><span class="tag ' + g.key + '">' + esc(g.title) + '</span>';
+      g.cards.forEach(function (c) {
+        html += '<button type="button" class="sheet-nav__chip" data-jump="sheet-' + c.id + '">' + c.icon + ' ' + esc(c.title) + '</button>';
+      });
+      html += '</div>';
+    });
+    html += '</nav>';
+
+    groups.forEach(function (g) {
+      html += '<h2 class="section-title ' + g.key + '"><span class="dot"></span>' + esc(g.title) + '</h2><div class="sheet-grid">';
+      g.cards.forEach(function (c) {
+        var refs = cardRefs(c);
+        html += '<section class="card sheet-card ' + g.key + '" id="sheet-' + c.id + '">' +
+          '<header class="sheet-card__head"><span class="sheet-card__icon" aria-hidden="true">' + c.icon + '</span>' +
+          '<h3>' + esc(c.title) + '</h3><span class="tag">' + refs.length + '問</span></header>' +
+          '<p class="sheet-why"><b>原理</b>' + c.why + '</p><ul class="sheet-rows">';
+        c.rows.forEach(function (row, i) {
+          var rr = rowRefs(row[2]);
+          html += '<li class="sheet-row" data-text="' + esc((stripTags(row[0]) + ' ' + stripTags(row[1])).toLowerCase()) + '">' +
+            '<div class="sheet-row__q">' + row[0] + '</div>' +
+            '<div class="sheet-row__a">' + row[1] + '</div>' +
+            '<a class="sheet-row__n ' + rowState(rr) + '" href="#/quiz/sheet/' + c.id + '/' + i + '" title="この型の' + rr.length + '問を解く">' + rr.length + '問</a></li>';
+        });
+        html += '</ul><div class="sheet-card__foot">' +
+          '<a class="btn primary small" href="#/quiz/sheet/' + c.id + '">このテーマを解く(' + refs.length + '問)</a>' +
+          ((c.topics || []).length ? '<details class="sheet-more" data-card="' + c.id + '"><summary>詳しい原理を読む</summary><div class="sheet-more__body"></div></details>' : '') +
+          '</div></section>';
+      });
+      html += '</div>';
+    });
+    $main.innerHTML = html + '</div>';
+
+    Array.prototype.forEach.call($main.querySelectorAll('[data-jump]'), function (b) {
+      b.addEventListener('click', function () {
+        var el = document.getElementById(b.getAttribute('data-jump'));
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+    // 詳しい原理は開いたときに描画する(SVG を含むので初期表示を軽くする)
+    Array.prototype.forEach.call($main.querySelectorAll('.sheet-more'), function (d) {
+      d.addEventListener('toggle', function () {
+        var body = d.querySelector('.sheet-more__body');
+        if (!d.open || body.childElementCount) return;
+        body.innerHTML = sheetCard(d.getAttribute('data-card')).topics.map(function (t) {
+          var kv = t.split(':'), tp = HAM.exps[kv[0]].topics[kv[1]];
+          return '<div class="rich sheet-topic"><h4>' + tp.title + '</h4>' + tp.body + '</div>';
+        }).join('');
+      });
+    });
+    document.getElementById('printSheet').addEventListener('click', function () { window.print(); });
+    document.getElementById('sheetFilter').addEventListener('input', function (e) {
+      var f = e.target.value.trim().toLowerCase();
+      Array.prototype.forEach.call($main.querySelectorAll('.sheet-card'), function (card) {
+        var any = false;
+        Array.prototype.forEach.call(card.querySelectorAll('.sheet-row'), function (row) {
+          var hit = !f || row.getAttribute('data-text').indexOf(f) !== -1;
+          row.hidden = !hit;
+          if (hit) any = true;
+        });
+        card.hidden = !any;
+      });
+    });
+  }
+
+  function startSheetQuiz(id, rowIdx) {
+    var c = sheetCard(id);
+    if (!c) { location.hash = '#/cheatsheet'; return; }
+    var row = !isNaN(rowIdx) && c.rows[rowIdx];
+    startList(row ? c.title + ' ・ ' + stripTags(row[0]) : c.title,
+      '#/cheatsheet', row ? rowRefs(row[2]) : cardRefs(c));
+  }
+
   /* ---------- ルーティング ---------- */
   function parseHash() {
     var h = location.hash.replace(/^#/, '') || '/';
@@ -505,13 +640,17 @@
 
   function route() {
     var r = parseHash(), p = r.parts;
-    var nav = p[0] === 'review' || (p[0] === 'quiz' && p[1] === 'review') ? 'review' : (p[0] === 'search' ? 'search' : (p.length ? '' : 'home'));
+    var nav = p[0] === 'review' || (p[0] === 'quiz' && p[1] === 'review') ? 'review'
+      : p[0] === 'cheatsheet' || (p[0] === 'quiz' && p[1] === 'sheet') ? 'cheatsheet'
+      : p[0] === 'search' ? 'search' : (p.length ? '' : 'home');
     Array.prototype.forEach.call(document.querySelectorAll('[data-nav]'), function (a) {
       a.classList.toggle('is-active', a.getAttribute('data-nav') === nav);
     });
     session = null;
 
     if (p[0] === 'quiz' && p[1] === 'review') startReview();
+    else if (p[0] === 'quiz' && p[1] === 'sheet') startSheetQuiz(p[2], parseInt(p[3], 10));
+    else if (p[0] === 'cheatsheet') renderCheatsheet();
     else if (p[0] === 'quiz' && CAT[p[1]]) startPractice(p[1], parseInt(r.params.n, 10) || 0);
     else if (p[0] === 'exam' && EXAM[p[1]]) startExam(p[1]);
     else if (p[0] === 'study' && CAT[p[1]]) renderStudy(p[1]);

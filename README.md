@@ -8,6 +8,7 @@
 
 ## 機能
 
+- **チートシート(まとめ)** … 似た問題を「問われ方 → 答え」の型 201 行・28 テーマに集約し、各テーマに原理を添えたもの。行ごとにその型の問題だけを解ける。印刷/PDF対応
 - 分野別演習(ランダム10問/全問)… 解答するとすぐに正誤と解説を表示(選択肢は毎回シャッフル)
 - 模擬試験(法規12問・無線工学12問)… 本番と同じ分野配分。採点後に全問の解説を確認。合格ライン 8問/12問
 - 一覧で学ぶ … 分野の全問題を正解・解説つきで閲覧、分野内検索
@@ -32,8 +33,9 @@ assets/js/registry.js      データ登録用レジストリ
 assets/js/app.js           画面描画・ルーティング・学習記録
 data/questions/*.js        問題データ(tools/import_questions.py で原典 JSON から生成)
 data/explanations/*.js     解説データ(分野ごと。topics=原理・背景、items=各問の解説)
+data/cheatsheet.js         チートシート(問われ方 → 答え の型と対象問題)
 data/img/                  問題の図版
 tools/source/*.json        原典の問題データ
 tools/import_questions.py  原典 JSON → data/questions/*.js の変換
-tools/check_explanations.js 全問に解説があるかの検査(node tools/check_explanations.js)
+tools/check_explanations.js 全問に解説があり、チートシートが全問をカバーしているかの検査(node tools/check_explanations.js)
 ```

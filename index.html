@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>アマ4 解説ラボ</title>
+<meta name="description" content="第4級アマチュア無線技士の過去問を、原文のまま出題し、解説と「なぜそうなるのか」の原理まで学べる学習サイト。">
+<meta name="theme-color" content="#0f172a">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css">
+<script>
+  // テーマを描画前に適用してちらつきを防ぐ
+  try {
+    var t = localStorage.getItem('ham4.theme');
+    if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+</script>
+</head>
+<body>
+<a class="skip" href="#main">本文へスキップ</a>
+
+<header class="topbar">
+  <div class="topbar__inner">
+    <a class="brand" href="#/">
+      <span class="brand__mark" aria-hidden="true">
+        <svg viewBox="0 0 32 32" width="28" height="28"><circle cx="16" cy="16" r="15" fill="var(--accent)"/><path d="M16 21v-9M12.5 9.5a5 5 0 0 1 7 0M10 7a8.5 8.5 0 0 1 12 0" stroke="#fff" stroke-width="2.2" fill="none" stroke-linecap="round"/><circle cx="16" cy="22.5" r="2" fill="#fff"/></svg>
+      </span>
+      <span class="brand__text">アマ4<b>解説ラボ</b></span>
+    </a>
+    <nav class="topnav" aria-label="メイン">
+      <a href="#/" data-nav="home">ホーム</a>
+      <a href="#/review" data-nav="review">復習</a>
+      <a href="#/search" data-nav="search">検索</a>
+    </nav>
+    <button class="iconbtn" id="themeToggle" type="button" aria-label="テーマ切替" title="テーマ切替">
+      <svg class="i-sun" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><circle cx="12" cy="12" r="4.5" fill="currentColor"/><g stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 1.5v2.5M12 20v2.5M1.5 12H4M20 12h2.5M4.6 4.6l1.8 1.8M17.6 17.6l1.8 1.8M4.6 19.4l1.8-1.8M17.6 6.4l1.8-1.8"/></g></svg>
+      <svg class="i-moon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M20.5 14.5A8.5 8.5 0 0 1 9.5 3.5a8.5 8.5 0 1 0 11 11z" fill="currentColor"/></svg>
+    </button>
+  </div>
+</header>
+
+<main id="main" class="main" tabindex="-1"></main>
+
+<footer class="footer">
+  <p>問題文・選択肢は <a href="https://ham.icoro.com/index.html" target="_blank" rel="noopener">第4級アマチュア無線技士 過去問題集(icoro)</a> 収録の過去問を原文のまま使用しています。解説・原理の文章は本サイト独自のものです。</p>
+  <p>学習記録はこのブラウザ内(localStorage)にのみ保存されます。</p>
+</footer>
+
+<script src="assets/js/registry.js"></script>
+<script src="data/questions/law1.js"></script>
+<script src="data/questions/law2.js"></script>
+<script src="data/questions/law3.js"></script>
+<script src="data/questions/law4.js"></script>
+<script src="data/questions/law5.js"></script>
+<script src="data/questions/law6.js"></script>
+<script src="data/questions/tech1.js"></script>
+<script src="data/questions/tech2.js"></script>
+<script src="data/questions/tech3.js"></script>
+<script src="data/questions/tech4.js"></script>
+<script src="data/questions/tech5.js"></script>
+<script src="data/questions/tech6.js"></script>
+<script src="data/questions/tech7.js"></script>
+<script src="data/questions/tech8.js"></script>
+<script src="data/questions/tech9.js"></script>
+<script src="data/explanations/law1.js"></script>
+<script src="data/explanations/law2.js"></script>
+<script src="data/explanations/law3.js"></script>
+<script src="data/explanations/law4.js"></script>
+<script src="data/explanations/law5.js"></script>
+<script src="data/explanations/law6.js"></script>
+<script src="data/explanations/tech1.js"></script>
+<script src="data/explanations/tech2.js"></script>
+<script src="data/explanations/tech3.js"></script>
+<script src="data/explanations/tech4.js"></script>
+<script src="data/explanations/tech5.js"></script>
+<script src="data/explanations/tech6.js"></script>
+<script src="data/explanations/tech7.js"></script>
+<script src="data/explanations/tech8.js"></script>
+<script src="data/explanations/tech9.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>

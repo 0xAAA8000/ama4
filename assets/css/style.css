@@ -309,7 +309,7 @@ h1, h2, h3 { line-height: 1.35; letter-spacing: .01em; }
 .rich .mnemonic::before { content: "覚え方 "; font-weight: 900; color: var(--ok); }
 .rich table { width: 100%; display: block; overflow-x: auto; }
 .rich th { background: var(--surface-2); text-align: left; }
-.rich svg { max-width: 100%; height: auto; display: block; margin: 8px auto; }
+.rich svg { width: 100%; max-width: 560px; height: auto; display: block; margin: 8px auto; }
 
 .quiz-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 16px; flex-wrap: wrap; }
 .kbd-hint { font-size: 12px; color: var(--text-3); margin-top: 12px; text-align: center; }
@@ -380,3 +380,6 @@ kbd { font-family: "JetBrains Mono", monospace; font-size: 11px; padding: 1px 6p
 @media (prefers-reduced-motion: reduce) {
   * { animation: none !important; transition: none !important; }
 }
+
+/* 開いた項目では要約行の問題文を隠し、本文と重複させない */
+.review-item[open] .sum-text p { display: none; }

@@ -10,15 +10,15 @@ HAM.addExplanations('law3', {
 <tr><td><b>30MHzを超える</b>(VHF・UHF帯)</td><td><b>20W以下</b></td></tr>
 </table>
 <svg viewBox="0 0 520 110" role="img" aria-label="4アマが使える周波数範囲の図">
-  <line x1="20" y1="60" x2="500" y2="60" stroke="currentColor" stroke-opacity=".4" stroke-width="2"/>
+  <line x1="20" y1="82" x2="500" y2="82" stroke="currentColor" stroke-opacity=".4" stroke-width="2"/>
   <rect x="20" y="44" width="110" height="32" rx="6" fill="#10b981" fill-opacity=".25" stroke="#10b981"/>
-  <text x="75" y="65" font-size="13" text-anchor="middle" fill="currentColor" font-weight="700">〜8MHz 10W</text>
+  <text x="75" y="65" font-size="11.5" text-anchor="middle" fill="currentColor" font-weight="700">〜8MHz 10W</text>
   <rect x="130" y="44" width="130" height="32" rx="6" fill="#e11d48" fill-opacity=".12" stroke="#e11d48" stroke-dasharray="4 3"/>
-  <text x="195" y="65" font-size="12.5" text-anchor="middle" fill="currentColor">8〜21MHz 不可</text>
+  <text x="195" y="65" font-size="11.5" text-anchor="middle" fill="currentColor">8〜21MHz 不可</text>
   <rect x="260" y="44" width="100" height="32" rx="6" fill="#10b981" fill-opacity=".25" stroke="#10b981"/>
-  <text x="310" y="65" font-size="13" text-anchor="middle" fill="currentColor" font-weight="700">21〜30MHz 10W</text>
+  <text x="310" y="65" font-size="10.5" text-anchor="middle" fill="currentColor" font-weight="700">21〜30MHz 10W</text>
   <rect x="360" y="44" width="140" height="32" rx="6" fill="#6366f1" fill-opacity=".22" stroke="#6366f1"/>
-  <text x="430" y="65" font-size="13" text-anchor="middle" fill="currentColor" font-weight="700">30MHz超 20W</text>
+  <text x="430" y="65" font-size="11.5" text-anchor="middle" fill="currentColor" font-weight="700">30MHz超 20W</text>
   <text x="130" y="96" font-size="11" text-anchor="middle" fill="currentColor">8</text>
   <text x="260" y="96" font-size="11" text-anchor="middle" fill="currentColor">21</text>
   <text x="360" y="96" font-size="11" text-anchor="middle" fill="currentColor">30 [MHz]</text>
